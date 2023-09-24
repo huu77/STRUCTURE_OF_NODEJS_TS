@@ -1,0 +1,3 @@
+# để các file ko cần kiểm tra lỗi 
+node_modules/
+dist/

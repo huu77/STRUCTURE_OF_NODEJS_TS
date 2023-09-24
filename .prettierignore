@@ -1,0 +1,3 @@
+# để các file ko cần ko cần thiết
+node_modules/
+dist/
