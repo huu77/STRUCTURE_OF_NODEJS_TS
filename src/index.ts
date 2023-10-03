@@ -1,11 +1,12 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
- 
- 
+
+//  USING ROUTER
+import { routes } from './api/v1/routes'
 // connectRedis()
-  import './config/redis_example'
- 
+import './config/redis_example'
+
 // using python
 // import { PythonShell } from 'python-shell'
 
@@ -17,12 +18,16 @@ import helmet from 'helmet'
 
 // tối ưu băng thông và nén dữ liệu , cải thiện trải nghiệm người dùng
 import compression from 'compression'
-// 
-import {PrismaClient} from '@prisma/client'
+//
 // add swager
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './config/Swager/swagger.yaml'
 
+// google 
+import './api/v1/compoments/Login/Google/services'
+// 
+import passport from 'passport'
+import session from 'express-session'
 // Load environment variables from .env file
 dotenv.config()
 
@@ -42,26 +47,19 @@ const port: any = process.env.PORT || 8686
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
- 
+app.use(
+  session({
+    secret: process.env.MYSECRET as string,
+    resave: false,
+    saveUninitialized: false,
+    // cookie: { secure: true }
+  })
+)
+app.use(passport.initialize())
+app.use(passport.session())
 
+app.use('/', routes)
 
-const prisma = new PrismaClient();
-
-app.get('/', async (_req, res) => {
-  try {
-    const users = await prisma.kHACHHANG.findMany();
-    console.log(users);
-    res.json(users); // Gửi dữ liệu JSON về client
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Something went wrong' }); // Xử lý lỗi
-  } finally {
-    await prisma.$disconnect();
-  }
-});
-
-
-// connectRedis()
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`)
 })

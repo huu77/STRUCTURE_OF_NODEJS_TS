@@ -6,7 +6,7 @@ dotenv.config()
 const REDIS_HOST = process.env.REDIS_HOST as string
 const REDIS_PORT = Number.parseInt((process.env.REDIS_PORT as string))
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD as string
-console.log(REDIS_HOST,REDIS_PORT,REDIS_PASSWORD);
+
 
 const redisClient = createClient({
   password: REDIS_PASSWORD,
