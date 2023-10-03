@@ -23,8 +23,9 @@ import compression from 'compression'
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './config/Swager/swagger.yaml'
 
-// google 
-import './api/v1/compoments/Login/Google/services'
+// login with 3th
+ import './api/v1/compoments/Login'
+ 
 // 
 import passport from 'passport'
 import session from 'express-session'
