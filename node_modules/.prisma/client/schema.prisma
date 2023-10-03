@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model CTHD {
+  SOHD    Int
+  MASP    String  @db.Char(4)
+  SL      Int?
+  HOADON  HOADON  @relation(fields: [SOHD], references: [SOHD], onUpdate: NoAction, map: "fk01_CTHD")
+  SANPHAM SANPHAM @relation(fields: [MASP], references: [MASP], onUpdate: NoAction, map: "fk02_CTHD")
+
+  @@id([SOHD, MASP], map: "pk_cthd")
+}
+
+model HOADON {
+  SOHD      Int        @id(map: "pk_hd")
+  NGHD      DateTime?  @db.SmallDateTime
+  MAKH      String?    @db.Char(4)
+  MANV      String?    @db.Char(4)
+  TRIGIA    Float?     @db.Money
+  CTHD      CTHD[]
+  KHACHHANG KHACHHANG? @relation(fields: [MAKH], references: [MAKH], onDelete: NoAction, onUpdate: NoAction, map: "fk01_HD")
+  NHANVIEN  NHANVIEN?  @relation(fields: [MANV], references: [MANV], onDelete: NoAction, onUpdate: NoAction, map: "fk02_HD")
+}
+
+model KHACHHANG {
+  MAKH    String    @id(map: "pk_kh") @db.Char(4)
+  HOTEN   String?   @db.VarChar(40)
+  DCHI    String?   @db.VarChar(50)
+  SODT    String?   @db.VarChar(20)
+  NGSINH  DateTime? @db.SmallDateTime
+  NGDK    DateTime? @db.SmallDateTime
+  DOANHSO Float?    @db.Money
+  HOADON  HOADON[]
+}
+
+model NHANVIEN {
+  MANV   String    @id(map: "pk_nv") @db.Char(4)
+  HOTEN  String?   @db.VarChar(40)
+  SODT   String?   @db.VarChar(20)
+  NGVL   DateTime? @db.SmallDateTime
+  HOADON HOADON[]
+}
+
+model SANPHAM {
+  MASP   String  @id(map: "pk_sp") @db.Char(4)
+  TENSP  String? @db.VarChar(40)
+  DVT    String? @db.VarChar(20)
+  NUOCSX String? @db.VarChar(40)
+  GIA    Float?  @db.Money
+  CTHD   CTHD[]
+}

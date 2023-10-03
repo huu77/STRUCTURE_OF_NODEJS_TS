@@ -1,13 +1,13 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
-
+ 
+ 
+// connectRedis()
+  import './config/redis_example'
+ 
 // using python
-import { PythonShell } from 'python-shell'
-
-// using database test
-import { sqlQueryType } from 'msnodesqlv8/types'
-import { database } from './config/database'
+// import { PythonShell } from 'python-shell'
 
 // using log nhật kí
 import morgan from 'morgan'
@@ -17,6 +17,11 @@ import helmet from 'helmet'
 
 // tối ưu băng thông và nén dữ liệu , cải thiện trải nghiệm người dùng
 import compression from 'compression'
+// 
+import {PrismaClient} from '@prisma/client'
+// add swager
+// import swaggerUi from 'swagger-ui-express';
+// import swaggerDocument from './config/Swager/swagger.yaml'
 
 // Load environment variables from .env file
 dotenv.config()
@@ -31,40 +36,32 @@ app.use(helmet())
 app.use(compression()) // co ther giam dung luong gap 10 lan
 
 // init port
-const port: any = process.env.PORT
+const port: any = process.env.PORT || 8686
 
 // Sử dụng body-parser để xử lý phần thân của yêu cầu cho res json
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-// init router
-app.get('/', (req, res) => {
-  // test data with compression
-  const stringTEst = 'Hello huu'
+ 
 
-  return res.status(200).json({
-    mesage: 'wellcome to viet nam',
-    data: stringTEst.repeat(1000)
-  })
-  // test with python
-  // 1 params  1 là id của item
-  // const options = {
-  //   scriptPath: 'D:/project/testcode/',
-  //   args: ['16']
-  // }
-  // PythonShell.run('test.py', options).then((messages) => {
-  //   // results is an array consisting of messages collected during execution
-  //   res.send(messages)
-  // })
-})
 
-// init data
-// const number = 5
-// const query: sqlQueryType = `select TOP ${number} * from KHACHHANG where DOANHSO >= '21000.00'  `
-// database(query, (err, rows) => {
-//   console.log(rows)
-// })
+const prisma = new PrismaClient();
 
+app.get('/', async (_req, res) => {
+  try {
+    const users = await prisma.kHACHHANG.findMany();
+    console.log(users);
+    res.json(users); // Gửi dữ liệu JSON về client
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong' }); // Xử lý lỗi
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+
+
+// connectRedis()
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`)
 })
