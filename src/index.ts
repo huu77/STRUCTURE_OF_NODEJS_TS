@@ -25,7 +25,7 @@ import compression from 'compression'
 
 // login with 3th
  import './api/v1/compoments/Login'
- 
+ import './api/v1/middlewares/status_handle'
 // 
 import passport from 'passport'
 import session from 'express-session'
